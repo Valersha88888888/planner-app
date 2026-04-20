@@ -23,10 +23,14 @@ export default function SignupPage() {
     setLoading(true)
     setMessage('')
 
-    // 1. Создаём пользователя в auth
+    // 🔥 ГОЛОВНИЙ ФІКС (ось тут додається)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo:
+          'https://planner-app-umber.vercel.app/auth/callback',
+      },
     })
 
     if (error) {
@@ -37,7 +41,7 @@ export default function SignupPage() {
 
     const user = data.user
 
-    // 2. Добавляем профиль в таблицу profiles
+    // профіль (нічого не чіпаю)
     if (user) {
       const { error: profileError } = await supabase.from('profiles').insert([
         {
@@ -59,18 +63,18 @@ export default function SignupPage() {
       }
     }
 
-    setMessage('Аккаунт создан. Теперь войдите.')
+    setMessage('Проверьте email и подтвердите регистрацию')
     setLoading(false)
 
     setTimeout(() => {
       router.push('/login')
-    }, 1200)
+    }, 1500)
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black text-white">
       <div className="flex w-full max-w-md flex-col gap-4 rounded-xl border border-white/10 p-6">
-        <h1 className="text-2xl font-semibold">Kenon & Rostik</h1>
+        <h1 className="text-2xl font-semibold">🚗 Kenon & Rostik</h1>
         <p className="text-sm text-white/70">Регистрация</p>
 
         <input

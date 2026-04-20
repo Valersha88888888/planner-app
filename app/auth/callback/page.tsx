@@ -8,18 +8,27 @@ export default function Callback() {
   const router = useRouter()
 
   useEffect(() => {
-    const handleSession = async () => {
-      const { data } = await supabase.auth.getSession()
+    const handleAuth = async () => {
+      const { data, error } = await supabase.auth.getSession()
+
+      if (error) {
+        router.push('/login')
+        return
+      }
 
       if (data.session) {
-        router.push('/dashboard') // 👉 редірект
+        router.push('/dashboard')
       } else {
         router.push('/login')
       }
     }
 
-    handleSession()
+    handleAuth()
   }, [router])
 
-  return <p>Завантаження...</p>
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      Проверка входа...
+    </div>
+  )
 }
