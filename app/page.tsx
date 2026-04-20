@@ -12,7 +12,7 @@ export default function Home() {
         </p>
 
         <p className="text-sm text-gray-500">
-          Мы временно не работаем
+         WORKING 🚀
         </p>
 
         <a
