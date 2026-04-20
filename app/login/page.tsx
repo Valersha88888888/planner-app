@@ -4,18 +4,16 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
 
-export default function SignupPage() {
+export default function LoginPage() {
   const router = useRouter()
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSignup = async () => {
-    if (!firstName || !lastName || !email || !password) {
+  const handleLogin = async () => {
+    if (!email || !password) {
       setMessage('Заполните все поля')
       return
     }
@@ -23,8 +21,7 @@ export default function SignupPage() {
     setLoading(true)
     setMessage('')
 
-    // 1. Создаём пользователя
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -35,36 +32,8 @@ export default function SignupPage() {
       return
     }
 
-    const user = data.user
-
-    // 2. Добавляем профиль
-    if (user) {
-      const { error: profileError } = await supabase.from('profiles').insert([
-        {
-          id: user.id,
-          email: email,
-          first_name: firstName,
-          last_name: lastName,
-          full_name: `${firstName} ${lastName}`,
-        },
-      ])
-
-      if (profileError) {
-        setMessage(
-          'Аккаунт создан, но профиль не сохранился: ' +
-            profileError.message
-        )
-        setLoading(false)
-        return
-      }
-    }
-
-    setMessage('Аккаунт создан. Теперь войдите.')
-    setLoading(false)
-
-    setTimeout(() => {
-      router.push('/login')
-    }, 1200)
+    // ✅ УСПІШНИЙ ЛОГІН → dashboard
+    router.push('/dashboard')
   }
 
   return (
@@ -76,31 +45,15 @@ export default function SignupPage() {
         </h1>
 
         <p className="mb-6 text-center text-white/60">
-          Регистрация
+          Вход
         </p>
 
         <div className="flex flex-col gap-3">
 
           <input
-            type="text"
-            placeholder="Имя"
-            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-
-          <input
-            type="text"
-            placeholder="Фамилия"
-            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-
-          <input
             type="email"
             placeholder="Email"
-            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            className="rounded-lg border border-white/20 bg-black/40 p-3"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -108,32 +61,32 @@ export default function SignupPage() {
           <input
             type="password"
             placeholder="Пароль"
-            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            className="rounded-lg border border-white/20 bg-black/40 p-3"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 
           <button
-            onClick={handleSignup}
+            onClick={handleLogin}
             disabled={loading}
-            className="mt-2 rounded-lg bg-white py-3 font-semibold text-black transition hover:opacity-80 disabled:opacity-40"
+            className="mt-2 rounded-lg bg-white py-3 font-semibold text-black"
           >
-            {loading ? 'Загрузка...' : 'Создать аккаунт'}
+            {loading ? 'Загрузка...' : 'Войти'}
           </button>
 
           {message && (
-            <p className="mt-2 text-center text-sm text-white/70">
+            <p className="text-sm text-center text-white/70">
               {message}
             </p>
           )}
 
-          <p className="mt-4 text-center text-sm text-white/50">
-            Уже есть аккаунт?{' '}
+          <p className="text-center text-sm text-white/50 mt-4">
+            Нет аккаунта?{' '}
             <span
-              onClick={() => router.push('/login')}
-              className="cursor-pointer text-white underline"
+              onClick={() => router.push('/signup')}
+              className="cursor-pointer underline"
             >
-              Войти
+              Регистрация
             </span>
           </p>
 
