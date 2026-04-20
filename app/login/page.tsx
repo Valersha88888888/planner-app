@@ -23,6 +23,7 @@ export default function SignupPage() {
     setLoading(true)
     setMessage('')
 
+    // 1. Создаём пользователя
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -36,11 +37,12 @@ export default function SignupPage() {
 
     const user = data.user
 
+    // 2. Добавляем профиль
     if (user) {
       const { error: profileError } = await supabase.from('profiles').insert([
         {
           id: user.id,
-          email,
+          email: email,
           first_name: firstName,
           last_name: lastName,
           full_name: `${firstName} ${lastName}`,
@@ -48,7 +50,10 @@ export default function SignupPage() {
       ])
 
       if (profileError) {
-        setMessage('Аккаунт создан, но профиль не сохранился: ' + profileError.message)
+        setMessage(
+          'Аккаунт создан, но профиль не сохранился: ' +
+            profileError.message
+        )
         setLoading(false)
         return
       }
@@ -63,52 +68,76 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black text-white">
-      <div className="flex w-full max-w-md flex-col gap-4 rounded-xl border border-white/10 p-6">
-        <h1 className="text-2xl font-semibold">Kenon & Rostik</h1>
-        <p className="text-sm text-white/70">Регистрация</p>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black text-white">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl shadow-2xl">
 
-        <input
-          type="text"
-          placeholder="Имя"
-          className="rounded-md border border-white/20 bg-transparent p-3"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
+        <h1 className="mb-2 text-3xl font-bold text-center">
+          🚗 Bilservice
+        </h1>
 
-        <input
-          type="text"
-          placeholder="Фамилия"
-          className="rounded-md border border-white/20 bg-transparent p-3"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
+        <p className="mb-6 text-center text-white/60">
+          Регистрация
+        </p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="rounded-md border border-white/20 bg-transparent p-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="flex flex-col gap-3">
 
-        <input
-          type="password"
-          placeholder="Пароль"
-          className="rounded-md border border-white/20 bg-transparent p-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="text"
+            placeholder="Имя"
+            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
 
-        <button
-          onClick={handleSignup}
-          disabled={loading}
-          className="rounded-md bg-white px-4 py-3 text-black disabled:opacity-50"
-        >
-          {loading ? 'Загрузка...' : 'Создать аккаунт'}
-        </button>
+          <input
+            type="text"
+            placeholder="Фамилия"
+            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
 
-        {message && <p className="text-sm text-white/80">{message}</p>}
+          <input
+            type="email"
+            placeholder="Email"
+            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Пароль"
+            className="rounded-lg border border-white/20 bg-black/40 p-3 focus:outline-none focus:ring-2 focus:ring-white/40"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button
+            onClick={handleSignup}
+            disabled={loading}
+            className="mt-2 rounded-lg bg-white py-3 font-semibold text-black transition hover:opacity-80 disabled:opacity-40"
+          >
+            {loading ? 'Загрузка...' : 'Создать аккаунт'}
+          </button>
+
+          {message && (
+            <p className="mt-2 text-center text-sm text-white/70">
+              {message}
+            </p>
+          )}
+
+          <p className="mt-4 text-center text-sm text-white/50">
+            Уже есть аккаунт?{' '}
+            <span
+              onClick={() => router.push('/login')}
+              className="cursor-pointer text-white underline"
+            >
+              Войти
+            </span>
+          </p>
+
+        </div>
       </div>
     </div>
   )
