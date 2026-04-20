@@ -7,9 +7,7 @@ export default function Home() {
           🚗 Bilservice
         </h1>
 
-        <p className="text-lg text-gray-400">
-          Vi är tillfälligt stängda
-        </p>
+       
 
         <p className="text-sm text-gray-500">
          WORKING 🚀
