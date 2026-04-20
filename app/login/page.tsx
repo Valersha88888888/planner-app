@@ -82,6 +82,12 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-white/50 mt-4">
             Нет аккаунта?{' '}
+            <p
+  onClick={() => router.push('/reset-password')}
+  className="text-sm text-center text-white/50 cursor-pointer underline"
+>
+  Забыли пароль?
+</p>
             <span
               onClick={() => router.push('/signup')}
               className="cursor-pointer underline"
