@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
   const [carName, setCarName] = useState('')
   const [title, setTitle] = useState('')
-  const [assignedTo, setAssignedTo] = useState('Kenon')
+  const [assignedTo, setAssignedTo] = useState('Kanan')
   const [contactName, setContactName] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
@@ -68,7 +68,7 @@ export default function DashboardPage() {
 
   const [planText, setPlanText] = useState('')
   const [planDate, setPlanDate] = useState('')
-  const [planAssignedTo, setPlanAssignedTo] = useState('Kenon')
+  const [planAssignedTo, setPlanAssignedTo] = useState('Kanan')
   const [planContactName, setPlanContactName] = useState('')
   const [planContactPhone, setPlanContactPhone] = useState('')
   const [planLicensePlate, setPlanLicensePlate] = useState('')
@@ -341,7 +341,7 @@ export default function DashboardPage() {
 
     setPlanText('')
     setPlanDate('')
-    setPlanAssignedTo('Kenon')
+    setPlanAssignedTo('Kanan')
     setPlanContactName('')
     setPlanContactPhone('')
     setPlanLicensePlate('')
@@ -360,7 +360,7 @@ export default function DashboardPage() {
     const doneOrders = orders.filter((o) => o.status === 'done')
 
     const kenon = doneOrders
-      .filter((o) => o.assigned_to === 'Kanon')
+      .filter((o) => o.assigned_to === 'Kanan')
       .reduce((sum, o) => sum + (o.price || 0), 0)
 
     const rostik = doneOrders
@@ -429,7 +429,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-4">
             <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Kanon</p>
+              <p className="text-sm text-white/50">Kanan</p>
               <p className="mt-1 text-2xl font-bold">{totals.kenon}</p>
             </div>
 
@@ -550,7 +550,7 @@ export default function DashboardPage() {
                   onChange={(e) => setAssignedTo(e.target.value)}
                   className="w-full rounded-xl bg-white p-4 text-black outline-none"
                 >
-                  <option value="Kenon">Kanon</option>
+                  <option value="Kenon">Kanan</option>
                   <option value="Rostik">Rostik</option>
                 </select>
               </div>
@@ -681,7 +681,7 @@ export default function DashboardPage() {
                 onChange={(e) => setPlanAssignedTo(e.target.value)}
                 className="w-full rounded-xl bg-white p-4 text-black outline-none"
               >
-                <option value="Kenon">Kanon</option>
+                <option value="Kenon">Kanan</option>
                 <option value="Rostik">Rostik</option>
               </select>
             </div>
