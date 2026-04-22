@@ -455,18 +455,7 @@ export default function DashboardPage() {
             <h3 className="mb-4 text-lg font-semibold text-white">Информация о машине</h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-               <div>
-                <label htmlFor="color" className="mb-2 block text-sm text-white/70">
-                  Цена за запчасти
-                </label>
-                <input
-                  id="color"
-                  type="text"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
-                />
-              </div>
+               
               <div>
                 <label htmlFor="carName" className="mb-2 block text-sm text-white/70">
                   Машина
@@ -535,6 +524,18 @@ export default function DashboardPage() {
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+                />
+              </div>
+              <div>
+                <label htmlFor="color" className="mb-2 block text-sm text-white/70">
+                  Цена за запчасти
+                </label>
+                <input
+                  id="color"
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
                   className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
                 />
               </div>
