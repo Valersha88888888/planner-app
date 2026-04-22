@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    if (!email.trim() || !password.trim()) {
       setMessage('Заполните все поля')
       return
     }
@@ -22,8 +22,8 @@ export default function LoginPage() {
     setMessage('')
 
     const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: email.trim(),
+      password: password.trim(),
     })
 
     if (error) {
@@ -32,71 +32,71 @@ export default function LoginPage() {
       return
     }
 
-    // ✅ УСПІШНИЙ ЛОГІН → dashboard
     router.push('/dashboard')
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black text-white">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl shadow-2xl">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-black px-4 text-white">
+      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl">
+        <h1 className="mb-2 text-center text-4xl font-bold">🚗 Bilservice</h1>
+        <p className="mb-8 text-center text-white/60">Вход</p>
 
-        <h1 className="mb-2 text-3xl font-bold text-center">
-          🚗 Bilservice
-        </h1>
+        <label htmlFor="email" className="mb-2 block text-sm text-white/70">
+          Email
+        </label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Введите email"
+          className="mb-4 w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <p className="mb-6 text-center text-white/60">
-          Вход
+        <label htmlFor="password" className="mb-2 block text-sm text-white/70">
+          Пароль
+        </label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Введите пароль"
+          className="mb-6 w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full rounded-xl bg-white py-4 text-xl font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
+        >
+          {loading ? 'Загрузка...' : 'Войти'}
+        </button>
+
+        {message && (
+          <p className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/80">
+            {message}
+          </p>
+        )}
+
+        <p className="mt-6 text-center text-sm text-white/50">
+          Нет аккаунта?{' '}
+          <span
+            onClick={() => router.push('/signup')}
+            className="cursor-pointer underline transition hover:text-white"
+          >
+            Регистрация
+          </span>
         </p>
 
-        <div className="flex flex-col gap-3">
-
-          <input
-            type="email"
-            placeholder="Email"
-            className="rounded-lg border border-white/20 bg-black/40 p-3"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="Пароль"
-            className="rounded-lg border border-white/20 bg-black/40 p-3"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <button
-            onClick={handleLogin}
-            disabled={loading}
-            className="mt-2 rounded-lg bg-white py-3 font-semibold text-black"
+        <p className="mt-2 text-center text-sm text-white/50">
+          <span
+            onClick={() => router.push('/reset-password')}
+            className="cursor-pointer underline transition hover:text-white"
           >
-            {loading ? 'Загрузка...' : 'Войти'}
-          </button>
-
-          {message && (
-            <p className="text-sm text-center text-white/70">
-              {message}
-            </p>
-          )}
-
-          <p className="text-center text-sm text-white/50 mt-4">
-            Нет аккаунта?{' '}
-            <p
-  onClick={() => router.push('/reset-password')}
-  className="text-sm text-center text-white/50 cursor-pointer underline"
->
-  Забыли пароль?
-</p>
-            <span
-              onClick={() => router.push('/signup')}
-              className="cursor-pointer underline"
-            >
-              Регистрация
-            </span>
-          </p>
-
-        </div>
+            Забыли пароль?
+          </span>
+        </p>
       </div>
     </div>
   )
