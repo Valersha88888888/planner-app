@@ -225,7 +225,7 @@ export default function DashboardPage() {
 
       setCarName('')
       setTitle('')
-      setAssignedTo('Kenon')
+      setAssignedTo('Kanon')
       setContactName('')
       setContactPhone('')
       setLicensePlate('')
@@ -360,7 +360,7 @@ export default function DashboardPage() {
     const doneOrders = orders.filter((o) => o.status === 'done')
 
     const kenon = doneOrders
-      .filter((o) => o.assigned_to === 'Kenon')
+      .filter((o) => o.assigned_to === 'Kanon')
       .reduce((sum, o) => sum + (o.price || 0), 0)
 
     const rostik = doneOrders
@@ -429,7 +429,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-4">
             <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Kenon</p>
+              <p className="text-sm text-white/50">Kanon</p>
               <p className="mt-1 text-2xl font-bold">{totals.kenon}</p>
             </div>
 
@@ -550,7 +550,7 @@ export default function DashboardPage() {
                   onChange={(e) => setAssignedTo(e.target.value)}
                   className="w-full rounded-xl bg-white p-4 text-black outline-none"
                 >
-                  <option value="Kenon">Kenon</option>
+                  <option value="Kenon">Kanon</option>
                   <option value="Rostik">Rostik</option>
                 </select>
               </div>
@@ -681,7 +681,7 @@ export default function DashboardPage() {
                 onChange={(e) => setPlanAssignedTo(e.target.value)}
                 className="w-full rounded-xl bg-white p-4 text-black outline-none"
               >
-                <option value="Kenon">Kenon</option>
+                <option value="Kenon">Kanon</option>
                 <option value="Rostik">Rostik</option>
               </select>
             </div>
