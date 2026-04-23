@@ -14,6 +14,7 @@ type WorkOrder = {
   license_plate: string | null
   model: string | null
   color: string | null
+  parts_price: number | null
   status: string | null
   price: number | null
   completed_at?: string | null
@@ -56,19 +57,20 @@ export default function DashboardPage() {
 
   const [carName, setCarName] = useState('')
   const [title, setTitle] = useState('')
-  const [assignedTo, setAssignedTo] = useState('Kanan')
+  const [assignedTo, setAssignedTo] = useState('')
   const [contactName, setContactName] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [model, setModel] = useState('')
   const [color, setColor] = useState('')
+  const [partsPrice, setPartsPrice] = useState('')
 
   const [beforeFiles, setBeforeFiles] = useState<FileList | null>(null)
   const [afterFiles, setAfterFiles] = useState<FileList | null>(null)
 
   const [planText, setPlanText] = useState('')
   const [planDate, setPlanDate] = useState('')
-  const [planAssignedTo, setPlanAssignedTo] = useState('Kanan')
+  const [planAssignedTo, setPlanAssignedTo] = useState('')
   const [planContactName, setPlanContactName] = useState('')
   const [planContactPhone, setPlanContactPhone] = useState('')
   const [planLicensePlate, setPlanLicensePlate] = useState('')
@@ -101,8 +103,6 @@ export default function DashboardPage() {
       .select('*')
       .order('created_at', { ascending: false })
 
-    console.log('ORDERS:', data)
-
     if (error) {
       setMessage('Ошибка загрузки работ: ' + error.message)
       return
@@ -117,8 +117,6 @@ export default function DashboardPage() {
       .select('*')
       .order('email', { ascending: true })
 
-    console.log('PROFILES:', data)
-
     if (error) {
       setMessage('Ошибка загрузки пользователей: ' + error.message)
       return
@@ -132,8 +130,6 @@ export default function DashboardPage() {
       .from('plans')
       .select('*')
       .order('date', { ascending: true })
-
-    console.log('PLANS:', data)
 
     if (error) {
       setMessage('Ошибка загрузки планов: ' + error.message)
@@ -150,9 +146,7 @@ export default function DashboardPage() {
 
     for (const file of Array.from(files)) {
       const originalName = file.name.toLowerCase()
-      const extension = originalName.includes('.')
-        ? originalName.split('.').pop()
-        : 'jpg'
+      const extension = originalName.includes('.') ? originalName.split('.').pop() : 'jpg'
 
       const safeBaseName = originalName
         .replace(/\.[^/.]+$/, '')
@@ -164,9 +158,7 @@ export default function DashboardPage() {
 
       const fileName = `${Date.now()}-${crypto.randomUUID()}-${safeBaseName || 'image'}.${extension}`
 
-      const { error } = await supabase.storage
-        .from('car-images')
-        .upload(fileName, file)
+      const { error } = await supabase.storage.from('car-images').upload(fileName, file)
 
       if (error) {
         throw new Error('Ошибка загрузки изображения: ' + error.message)
@@ -191,32 +183,22 @@ export default function DashboardPage() {
       const beforeUrls = await uploadImages(beforeFiles)
       const afterUrls = await uploadImages(afterFiles)
 
-      console.log('beforeUrls:', beforeUrls)
-      console.log('afterUrls:', afterUrls)
-
       const payload = {
         car_name: carName.trim(),
         title: title.trim(),
-        assigned_to: assignedTo,
-        contact_name: contactName.trim(),
-        contact_phone: contactPhone.trim(),
-        license_plate: licensePlate.trim(),
-        model: model.trim(),
-        color: color.trim(),
+        assigned_to: assignedTo.trim() || null,
+        contact_name: contactName.trim() || null,
+        contact_phone: contactPhone.trim() || null,
+        license_plate: licensePlate.trim() || null,
+        model: model.trim() || null,
+        color: color.trim() || null,
+        parts_price: partsPrice.trim() ? Number(partsPrice) : 0,
         status: 'planned',
         before_images: beforeUrls,
         after_images: afterUrls,
       }
 
-      console.log('INSERT PAYLOAD:', payload)
-
-      const { data, error } = await supabase
-        .from('work_orders')
-        .insert([payload])
-        .select()
-
-      console.log('INSERT DATA:', data)
-      console.log('INSERT ERROR:', error)
+      const { error } = await supabase.from('work_orders').insert([payload])
 
       if (error) {
         setMessage('Ошибка добавления работы: ' + error.message)
@@ -225,27 +207,22 @@ export default function DashboardPage() {
 
       setCarName('')
       setTitle('')
-      setAssignedTo('Kanon')
+      setAssignedTo('')
       setContactName('')
       setContactPhone('')
       setLicensePlate('')
       setModel('')
       setColor('')
+      setPartsPrice('')
       setBeforeFiles(null)
       setAfterFiles(null)
 
-      if (beforeInputRef.current) {
-        beforeInputRef.current.value = ''
-      }
-
-      if (afterInputRef.current) {
-        afterInputRef.current.value = ''
-      }
+      if (beforeInputRef.current) beforeInputRef.current.value = ''
+      if (afterInputRef.current) afterInputRef.current.value = ''
 
       setMessage('Работа добавлена')
       await fetchOrders()
     } catch (err) {
-      console.log('ADD ORDER CATCH:', err)
       setMessage(err instanceof Error ? err.message : 'Ошибка загрузки изображений')
     }
   }
@@ -323,16 +300,14 @@ export default function DashboardPage() {
       {
         title: planText.trim(),
         date: planDate,
-        assigned_to: planAssignedTo,
-        contact_name: planContactName.trim(),
-        contact_phone: planContactPhone.trim(),
-        license_plate: planLicensePlate.trim(),
-        model: planModel.trim(),
-        color: planColor.trim(),
+        assigned_to: planAssignedTo.trim() || null,
+        contact_name: planContactName.trim() || null,
+        contact_phone: planContactPhone.trim() || null,
+        license_plate: planLicensePlate.trim() || null,
+        model: planModel.trim() || null,
+        color: planColor.trim() || null,
       },
     ])
-
-    console.log('PLAN INSERT ERROR:', error)
 
     if (error) {
       setMessage('Ошибка добавления плана: ' + error.message)
@@ -341,7 +316,7 @@ export default function DashboardPage() {
 
     setPlanText('')
     setPlanDate('')
-    setPlanAssignedTo('Kanan')
+    setPlanAssignedTo('')
     setPlanContactName('')
     setPlanContactPhone('')
     setPlanLicensePlate('')
@@ -358,20 +333,9 @@ export default function DashboardPage() {
 
   const totals = useMemo(() => {
     const doneOrders = orders.filter((o) => o.status === 'done')
+    const total = doneOrders.reduce((sum, o) => sum + (o.price || 0), 0)
 
-    const kenon = doneOrders
-      .filter((o) => o.assigned_to === 'Kanan')
-      .reduce((sum, o) => sum + (o.price || 0), 0)
-
-    const rostik = doneOrders
-      .filter((o) => o.assigned_to === 'Rostik')
-      .reduce((sum, o) => sum + (o.price || 0), 0)
-
-    return {
-      kenon,
-      rostik,
-      total: kenon + rostik,
-    }
+    return { total }
   }, [orders])
 
   const filteredOrders = useMemo(() => {
@@ -389,6 +353,7 @@ export default function DashboardPage() {
         (order.license_plate || '').toLowerCase().includes(q) ||
         (order.model || '').toLowerCase().includes(q) ||
         (order.color || '').toLowerCase().includes(q) ||
+        String(order.parts_price || '').toLowerCase().includes(q) ||
         (order.status || '').toLowerCase().includes(q)
       )
     })
@@ -429,17 +394,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-4">
             <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Kanan</p>
-              <p className="mt-1 text-2xl font-bold">{totals.kenon}</p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Rostik</p>
-              <p className="mt-1 text-2xl font-bold">{totals.rostik}</p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Итого</p>
+              <p className="text-sm text-white/50">Общий доход</p>
               <p className="mt-1 text-3xl font-bold text-green-400">{totals.total}</p>
             </div>
           </div>
@@ -455,7 +410,6 @@ export default function DashboardPage() {
             <h3 className="mb-4 text-lg font-semibold text-white">Информация о машине</h3>
 
             <div className="grid gap-4 md:grid-cols-2">
-               
               <div>
                 <label htmlFor="carName" className="mb-2 block text-sm text-white/70">
                   Машина
@@ -465,10 +419,9 @@ export default function DashboardPage() {
                   type="text"
                   value={carName}
                   onChange={(e) => setCarName(e.target.value)}
-                  className="block w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+                  className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
                 />
               </div>
-              
 
               <div>
                 <label htmlFor="licensePlate" className="mb-2 block text-sm text-white/70">
@@ -527,15 +480,16 @@ export default function DashboardPage() {
                   className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
                 />
               </div>
+
               <div>
-                <label htmlFor="color" className="mb-2 block text-sm text-white/70">
+                <label htmlFor="partsPrice" className="mb-2 block text-sm text-white/70">
                   Цена за запчасти
                 </label>
                 <input
-                  id="color"
-                  type="text"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
+                  id="partsPrice"
+                  type="number"
+                  value={partsPrice}
+                  onChange={(e) => setPartsPrice(e.target.value)}
                   className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
                 />
               </div>
@@ -544,15 +498,13 @@ export default function DashboardPage() {
                 <label htmlFor="assignedTo" className="mb-2 block text-sm text-white/70">
                   Кто делает работу
                 </label>
-                <select
+                <input
                   id="assignedTo"
+                  type="text"
                   value={assignedTo}
                   onChange={(e) => setAssignedTo(e.target.value)}
-                  className="w-full rounded-xl bg-white p-4 text-black outline-none"
-                >
-                  <option value="Kenon">Kanan</option>
-                  <option value="Rostik">Rostik</option>
-                </select>
+                  className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+                />
               </div>
 
               <div>
@@ -675,15 +627,13 @@ export default function DashboardPage() {
               <label htmlFor="planAssignedTo" className="mb-2 block text-sm text-white/70">
                 Кто делает
               </label>
-              <select
+              <input
                 id="planAssignedTo"
+                type="text"
                 value={planAssignedTo}
                 onChange={(e) => setPlanAssignedTo(e.target.value)}
-                className="w-full rounded-xl bg-white p-4 text-black outline-none"
-              >
-                <option value="Kenon">Kanan</option>
-                <option value="Rostik">Rostik</option>
-              </select>
+                className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
+              />
             </div>
 
             <div>
@@ -840,13 +790,16 @@ export default function DashboardPage() {
                       <p className="text-sm text-white/50">
                         Цвет: {order.color || 'не указан'}
                       </p>
+                      <p className="text-sm text-white/50">
+                        Цена за запчасти: {order.parts_price || 0}
+                      </p>
                     </div>
 
                     <div className="text-right">
                       <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium">
                         {order.status || 'не указан'}
                       </span>
-                      <p className="mt-3 text-sm text-white/50">Сумма</p>
+                      <p className="mt-3 text-sm text-white/50">Сумма работы</p>
                       <p className="text-2xl font-bold text-green-400">
                         {order.price || 0}
                       </p>
@@ -889,7 +842,7 @@ export default function DashboardPage() {
                     <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                       <input
                         type="number"
-                        placeholder="Введите сумму"
+                        placeholder="Введите сумму за работу"
                         value={priceInputs[order.id] || ''}
                         onChange={(e) =>
                           setPriceInputs((prev) => ({
