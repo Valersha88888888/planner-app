@@ -388,17 +388,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 p-6 md:grid-cols-3">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
-          <h2 className="mb-6 text-2xl font-bold">Доход</h2>
 
-          <div className="grid gap-4">
-            <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <p className="text-sm text-white/50">Общий доход</p>
-              <p className="mt-1 text-3xl font-bold text-green-400">{totals.total}</p>
-            </div>
-          </div>
-        </div>
 
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl md:col-span-2">
           <h2 className="mb-6 text-2xl font-bold">Добавить работу</h2>
@@ -494,18 +484,7 @@ export default function DashboardPage() {
                 />
               </div>
 
-              <div>
-                <label htmlFor="assignedTo" className="mb-2 block text-sm text-white/70">
-                  Кто делает работу
-                </label>
-                <input
-                  id="assignedTo"
-                  type="text"
-                  value={assignedTo}
-                  onChange={(e) => setAssignedTo(e.target.value)}
-                  className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
-                />
-              </div>
+             
 
               <div>
                 <label htmlFor="contactName" className="mb-2 block text-sm text-white/70">
@@ -623,18 +602,7 @@ export default function DashboardPage() {
               />
             </div>
 
-            <div>
-              <label htmlFor="planAssignedTo" className="mb-2 block text-sm text-white/70">
-                Кто делает
-              </label>
-              <input
-                id="planAssignedTo"
-                type="text"
-                value={planAssignedTo}
-                onChange={(e) => setPlanAssignedTo(e.target.value)}
-                className="w-full rounded-xl bg-white p-4 text-black outline-none placeholder:text-black/50"
-              />
-            </div>
+            
 
             <div>
               <label htmlFor="planContactName" className="mb-2 block text-sm text-white/70">
@@ -722,9 +690,7 @@ export default function DashboardPage() {
                 >
                   <p className="font-semibold">{plan.title}</p>
                   <p className="text-sm text-white/60">{plan.date}</p>
-                  <p className="text-sm text-white/60">
-                    Кто делает: {plan.assigned_to || 'не указано'}
-                  </p>
+                 
                   <p className="text-sm text-white/60">
                     Контакт: {plan.contact_name || 'не указан'}
                   </p>
@@ -772,9 +738,7 @@ export default function DashboardPage() {
                         {order.car_name || 'Без названия'}
                       </p>
                       <p className="text-white/70">{order.title || 'Без описания'}</p>
-                      <p className="text-sm text-white/50">
-                        Кто делает: {order.assigned_to || 'не указано'}
-                      </p>
+                    
                       <p className="text-sm text-white/50">
                         Контакт: {order.contact_name || 'не указан'}
                       </p>
@@ -904,6 +868,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-    </div>
+  
   )
 }
